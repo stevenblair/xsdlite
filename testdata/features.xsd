@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A schema written for xsdlite's tests. It uses each part of XML Schema the
+     package implements at least once. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:t="urn:xsdlite:test" xmlns="urn:xsdlite:test"
+           targetNamespace="urn:xsdlite:test" elementFormDefault="qualified">
+
+  <xs:include schemaLocation="features-types.xsd"/>
+
+  <xs:element name="catalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="title" type="tTitle"/>
+        <xs:element name="issued" type="tIssued" minOccurs="0"/>
+        <xs:element name="status" type="tStatus" default="draft" minOccurs="0"/>
+        <xs:element name="format" type="xs:token" fixed="v1" minOccurs="0"/>
+        <xs:element name="note" type="tNote" minOccurs="0" maxOccurs="3"/>
+        <xs:element name="category" type="tCategory" maxOccurs="unbounded"/>
+        <xs:element ref="product" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="shape" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="settings" type="tSettings" minOccurs="0"/>
+        <xs:element name="payload" type="tPayload" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="link" type="tLink" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="remark" type="xs:string" nillable="true" minOccurs="0"/>
+        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="agVersion"/>
+      <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+    <xs:key name="categoryKey">
+      <xs:selector xpath="t:category"/>
+      <xs:field xpath="@code"/>
+    </xs:key>
+    <xs:keyref name="productCategory" refer="categoryKey">
+      <xs:selector xpath="./t:product"/>
+      <xs:field xpath="t:category"/>
+    </xs:keyref>
+    <xs:unique name="uniqueSku">
+      <xs:selector xpath=".//t:product | .//t:variant"/>
+      <xs:field xpath="@sku"/>
+    </xs:unique>
+    <xs:keyref name="linkToVariant" refer="variantKey">
+      <xs:selector xpath="t:link"/>
+      <xs:field xpath="@sku"/>
+      <xs:field xpath="@colour"/>
+    </xs:keyref>
+    <xs:unique name="uniqueTag">
+      <xs:selector xpath="t:product/t:tag"/>
+      <xs:field xpath="."/>
+    </xs:unique>
+  </xs:element>
+
+  <xs:complexType name="tProduct">
+    <xs:sequence>
+      <xs:element name="name" type="tTitle"/>
+      <xs:element name="category" type="tCode"/>
+      <xs:group ref="gPricing"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="tag" type="tTag"/>
+        <xs:element name="dimension" type="tDimension"/>
+      </xs:choice>
+      <xs:element name="variant" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="colour" type="tColour" use="required"/>
+          <xs:attribute name="sku" type="tSku" use="required"/>
+          <xs:attribute name="sizes" type="tSizes"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="sku" type="tSku" use="required"/>
+    <xs:attribute name="replaces" type="xs:IDREF"/>
+    <xs:attribute name="related" type="xs:IDREFS"/>
+    <xs:attribute name="kind" type="xs:QName"/>
+    <xs:attribute name="unit" type="xs:token" fixed="each"/>
+    <xs:attribute name="active" type="xs:boolean" default="true"/>
+  </xs:complexType>
+
+  <xs:element name="product" type="tProduct">
+    <xs:key name="variantKey">
+      <xs:selector xpath="t:variant"/>
+      <xs:field xpath="@sku"/>
+      <xs:field xpath="@colour"/>
+    </xs:key>
+  </xs:element>
+
+  <!-- Substitution group with an abstract head. -->
+  <xs:element name="shape" type="tShape" abstract="true"/>
+  <xs:element name="circle" substitutionGroup="shape">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tShape">
+          <xs:attribute name="radius" type="tPositive" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="square" type="tSquare" substitutionGroup="shape"/>
+</xs:schema>

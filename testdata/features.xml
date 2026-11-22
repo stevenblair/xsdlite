@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:xsdlite:test" xmlns:t="urn:xsdlite:test" xmlns:x="urn:other" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         version="1.2.0" lang="en-GB" revision="3" checksum="0aF1B2c3" x:note="any attribute from another namespace">
+  <title>Spring  catalogue</title>
+  <issued>2024-03-12</issued>
+  <status>published</status>
+  <format>v1</format>
+  <note>Prices are <em>provisional</em> until April.</note>
+  <note>Second note</note>
+  <category code="TOOLS" since="2019">Hand tools</category>
+  <category code="GDN">Garden</category>
+  <product id="p1" sku="hmr-001" kind="t:tool" unit="each" active="1">
+    <name>Claw hammer</name>
+    <category>TOOLS</category>
+    <price currency="GBP" valid="2024-03-12T09:00:00Z">12.50</price>
+    <discount currency="GBP">1.25</discount>
+    <tag>heavy_duty</tag>
+    <dimension axis="x" mm="330" tolerance="PT0.5S"/>
+    <tag>#bestseller</tag>
+    <variant colour="red" sku="hmr-002" sizes="16 20"/>
+    <variant colour="#00ff7F" sku="hmr-003"/>
+  </product>
+  <product id="p2" sku="LEGACY42" replaces="p1" related="p1 p3">
+    <name>Spade</name>
+    <category>GDN</category>
+    <price currency="EUR">+0019.9</price>
+    <dimension axis="z" mm="1.1E3"/>
+  </product>
+  <product id="p3" sku="trwl-010">
+    <name>Trowel</name>
+    <category>GDN</category>
+    <price currency="GBP">6</price>
+    <variant colour="blue" sku="trwl-011"/>
+  </product>
+  <circle radius="2.5" fill="green"/>
+  <square layer="2"><label>Plot</label><side>4</side></square>
+  <square xsi:type="tUnlabelledSquare"><side>1e1</side></square>
+  <settings>
+    <retries>3</retries>
+    <locale>en</locale>
+    <started>08:30:00+01:00</started>
+  </settings>
+  <payload encoding="urn:example:raw">
+    <data>SGVsbG8gd29ybGQ=</data>
+    <anything xmlns="" attr="1"><goes>here</goes></anything>
+  </payload>
+  <link sku="hmr-002" colour="red"/>
+  <link sku="trwl-011" colour="blue"/>
+  <remark xsi:nil="true"/>
+  <x:extension><x:free form="yes">text</x:free></x:extension>
+</catalog>
